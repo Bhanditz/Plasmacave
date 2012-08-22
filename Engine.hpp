@@ -18,7 +18,8 @@ class Engine {
  public:
     Engine();
 
-    Cave *getMap();
+    Cave   *getMap();
+    Player *getPlayer();
 
     void run();
     void stop();
@@ -31,13 +32,16 @@ class Engine {
 };
 
 Engine::Engine() : player(Player()) {
+    this->player.setPos(0.0, 1.0, -10.0);
+
     this->running = false;
     this->lastRun = 0;
     this->runDelay = 250;
     this->map = new Cave();
 }
 
-Cave *Engine::getMap() { return this->map; }
+Cave   *Engine::getMap()    { return this->map; }
+Player *Engine::getPlayer() { return &this->player; }
 
 void Engine::run() {
     this->running = true;
@@ -54,7 +58,11 @@ void Engine::update() {
     if (!this->running) return;
     if (SDL_GetTicks() < this->lastRun + this->runDelay) return;
 
-    //TODO
+
+
+    this->player.update();
+    this->player.posp.y = 0.0;
+
 
     this->lastRun = SDL_GetTicks();
 }

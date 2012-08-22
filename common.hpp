@@ -3,6 +3,15 @@
 
 #include <GL/glew.h>
 
+
+struct vec3 {
+    double x, y, z;
+};
+
+struct vec2 {
+    double x, y;
+};
+
 void drawCube(GLfloat w, GLfloat h, GLfloat d) {
     w = w/2;
     h = h/2;

@@ -17,6 +17,7 @@
 #define SCREEN_BPP		32
 #define PI				3.1415926535
 
+#include "common.hpp"
 #include "Light.hpp"
 
 namespace fps {
@@ -161,8 +162,7 @@ int main( int argc, char **argv ) {
 	glViewport(0, 0, (GLsizei)SCREEN_WIDTH, (GLsizei)SCREEN_HEIGHT);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-//	glFrustum(-1.0, 1.0, -(double)SCREEN_HEIGHT/(double)SCREEN_WIDTH, (double)SCREEN_HEIGHT/(double)SCREEN_WIDTH, 1.0, 100.0);
-	glFrustum(-1.0, 1.0, -1.0, 1.0, 1.0, 100.0);
+	glFrustum(-1.0, 1.0, -(double)SCREEN_HEIGHT/(double)SCREEN_WIDTH, (double)SCREEN_HEIGHT/(double)SCREEN_WIDTH, 1.0, 100.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
@@ -206,6 +206,11 @@ int main( int argc, char **argv ) {
                     case SDLK_e: usZp += usMove; break;
                     case SDLK_q: usZp -= usMove; break;
 
+                    case SDLK_RIGHT: game->getPlayer()->move( 1, 0, 0); break;
+                    case SDLK_LEFT:  game->getPlayer()->move(-1, 0, 0); break;
+                    case SDLK_UP:    game->getPlayer()->move(0,  1, 0); break;
+                    case SDLK_DOWN:  game->getPlayer()->move(0, -1, 0); break;
+
                     case SDLK_RETURN:
                         if (game->isRunning()) game->stop(); else game->run();
                         break;
@@ -222,13 +227,13 @@ int main( int argc, char **argv ) {
 
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-		glLoadIdentity();
-        glTranslated(1.0, -4.0, -20.0);
+
+        glLoadIdentity();
+
+        glTranslated(game->getPlayer()->pos.x, game->getPlayer()->pos.y, -10+game->getPlayer()->pos.z);
+
 		glRotated((-1.0 + 2.0*mouse.y/SCREEN_HEIGHT) * -10.0, 1, 0, 0);
 		glRotated((-1.0 + 2.0*mouse.x/SCREEN_WIDTH) * -10.0, 0, 1, 0);
-
-        glTranslated(0.0, 4.0, 0.0);
-//		glRotated(bb/100.0, 1, 1, 1);
 
         game->update();
         game->draw();

@@ -6,7 +6,7 @@
 #include <GL/glew.h>
 #include <vector>
 
-#define MAP_MAX_SIZE 128
+#define MAP_MAX_SIZE 10
 
 Uint32 min(Uint32 a, Uint32 b) { return a<b?a:b; }
 Uint32 max(Uint32 a, Uint32 b) { return a>b?a:b; }
@@ -36,6 +36,21 @@ class Cave {
     }
 
     void draw() {
+        glColor3f(1.0f, 1.0f, 1.0f);
+        for(Uint32 z = 0; z < this->depth; z++) {
+//            for(Uint32 y = 0; y < h; y++) {
+                for(Uint32 x = 0; x < this->width; x++) {
+                glTranslated( x*1.2, 0, z*1.2);
+                glBegin(GL_QUADS);
+                    glVertex3d(-1.0, 0.0, -1.0);
+                    glVertex3d( 1.0, 0.0, -1.0);
+                    glVertex3d( 1.0, 0.0,  1.0);
+                    glVertex3d(-1.0, 0.0,  1.0);
+                glEnd();
+                glTranslated(-x*1.2, 0, z*1.2);
+                }
+//            }
+        }
 /*        glColor3f(1.0f, 1.0f, 1.0f);
 		glTranslatef(-(double)this->width/2.0, -(double)this->height/2.0, 0.0);
 
