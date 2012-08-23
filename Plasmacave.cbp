@@ -44,6 +44,10 @@
 		<Unit filename="Common.hpp" />
 		<Unit filename="Engine.hpp" />
 		<Unit filename="Light.hpp" />
+		<Unit filename="Node.hpp">
+			<Option compile="1" />
+			<Option link="1" />
+		</Unit>
 		<Unit filename="Player.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>

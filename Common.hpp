@@ -1,6 +1,8 @@
 #ifndef COMMON_HPP
 #define COMMON_HPP
 
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
 #include <GL/glew.h>
 
 

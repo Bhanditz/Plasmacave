@@ -6,14 +6,12 @@
 #include <GL/glew.h>
 #include <vector>
 
+#include "Node.hpp"
+
 #define MAP_MAX_SIZE 10
 
 Uint32 min(Uint32 a, Uint32 b) { return a<b?a:b; }
 Uint32 max(Uint32 a, Uint32 b) { return a>b?a:b; }
-
-struct Node {
-    Node() {};
-};
 
 class Cave {
  private:
@@ -27,11 +25,12 @@ class Cave {
 
     Cave(Uint32 w, Uint32 h, Uint32 d = MAP_MAX_SIZE) : width(min(w, MAP_MAX_SIZE)), height(min(h, MAP_MAX_SIZE)), depth(min(d, MAP_MAX_SIZE)) {
         for(Uint32 z = 0; z < d; z++) {
-            for(Uint32 y = 0; y < h; y++) {
+//            for(Uint32 y = 0; y < h; y++) {
                 for(Uint32 x = 0; x < w; x++) {
-                    this->nodes[d][y][x] = Node();
+                    double t = ((double)(rand()%10))/5.0 -1.0;
+                    this->nodes[z][0][x] = Node(t);
                 }
-            }
+//            }
         }
     }
 
@@ -54,10 +53,10 @@ class Cave {
                 }
 
                 glBegin(GL_QUADS);
-                    glVertex3d(xx-0.5, -1.0, zz-0.5);
-                    glVertex3d(xx+0.5, -1.0, zz-0.5);
-                    glVertex3d(xx+0.5, -1.0, zz+0.5);
-                    glVertex3d(xx-0.5, -1.0, zz+0.5);
+                    glVertex3d(xx-0.5, -1.0+this->nodes[z][0][x].getElevation(), zz-0.5);
+                    glVertex3d(xx+0.5, -1.0+this->nodes[z][0][x].getElevation(), zz-0.5);
+                    glVertex3d(xx+0.5, -1.0+this->nodes[z][0][x].getElevation(), zz+0.5);
+                    glVertex3d(xx-0.5, -1.0+this->nodes[z][0][x].getElevation(), zz+0.5);
                 glEnd();
             }
         }

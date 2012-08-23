@@ -4,6 +4,7 @@
 #include <math.h>
 #include <time.h>
 #include <vector>
+#include <map>
 #include <GL/glew.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
@@ -18,6 +19,7 @@
 #define PI				3.1415926535
 
 #include "Common.hpp"
+#include "ControlHandler.hpp"
 #include "Light.hpp"
 
 namespace fps {
@@ -55,7 +57,7 @@ void Quit(int returnCode = 0) {
 SDL_Surface *surface;
 Uint32 tt = 0, bb = 0;
 int videoFlags, done = 0;
-SDL_Event event;
+ControlHandler ctrl;
 const SDL_VideoInfo *videoInfo;
 char winTitle[256];
 
@@ -65,8 +67,6 @@ float usZp = 0.0f;
 float usMove = 1.0f;
 
 std::vector<Light> lights;
-
-struct Mouse { int x, y, p; } mouse;
 
 GLuint LoadTexture(char*,int*,int*);
 double sina(double a) { return sin(a/180.0f*PI); }
@@ -191,39 +191,18 @@ int main( int argc, char **argv ) {
             SDL_WM_SetCaption(winTitle, NULL);
 		}
 
-		mouse.p = SDL_GetMouseState(&mouse.x, &mouse.y);
+        ctrl.update();
 
-		while ( SDL_PollEvent( &event ) ) switch( event.type ) {
-		    case SDL_QUIT: done = 1; break;
-		    case SDL_KEYDOWN:
-                switch(event.key.keysym.sym) {
-                    case SDLK_ESCAPE: done = 1; break;
+        if (ctrl.keyHit(SDLK_ESCAPE)) done = 1;
+        if (ctrl.keyHit(SDLK_RETURN)) {
+            if (game->isRunning()) game->stop();
+            else game->run();
+        }
 
-                    case SDLK_d: usXp += usMove; break;
-                    case SDLK_a: usXp -= usMove; break;
-                    case SDLK_w: usYp += usMove; break;
-                    case SDLK_s: usYp -= usMove; break;
-                    case SDLK_e: usZp += usMove; break;
-                    case SDLK_q: usZp -= usMove; break;
-
-                    case SDLK_RIGHT: game->getPlayer()->turn( 0.0, 10.0, 0.0); break;
-                    case SDLK_LEFT:  game->getPlayer()->turn( 0.0,-10.0, 0.0); break;
-                    case SDLK_UP:    game->getPlayer()->move(  1.0 ); break;
-                    case SDLK_DOWN:  game->getPlayer()->move( -1.0 ); break;
-
-                    case SDLK_RETURN:
-                        if (game->isRunning()) game->stop(); else game->run();
-                        break;
-                    case SDLK_SPACE:
-                        break;
-                    default: break;
-                } break;
-            default:
-                if (mouse.p == 1) {
-                    printf("%f, %f\n", s2wX(mouse.x), s2wY(mouse.y));
-                }
-                break;
-		}
+        if (ctrl.keyDown(SDLK_RIGHT)) game->getPlayer()->turn( 0.0, 10.0, 0.0);
+        if (ctrl.keyDown(SDLK_LEFT))  game->getPlayer()->turn( 0.0,-10.0, 0.0);
+        if (ctrl.keyDown(SDLK_UP))    game->getPlayer()->move(  1.0 );
+        if (ctrl.keyDown(SDLK_DOWN))  game->getPlayer()->move( -1.0 );
 
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
