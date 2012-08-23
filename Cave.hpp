@@ -36,31 +36,31 @@ class Cave {
     }
 
     void draw() {
-        glColor3f(1.0f, 1.0f, 1.0f);
-        for(Uint32 z = 0; z < this->depth; z++) {
-//            for(Uint32 y = 0; y < h; y++) {
-                for(Uint32 x = 0; x < this->width; x++) {
-                glTranslated( x*1.2, 0, z*1.2);
-                glBegin(GL_QUADS);
-                    glVertex3d(-1.0, 0.0, -1.0);
-                    glVertex3d( 1.0, 0.0, -1.0);
-                    glVertex3d( 1.0, 0.0,  1.0);
-                    glVertex3d(-1.0, 0.0,  1.0);
-                glEnd();
-                glTranslated(-x*1.2, 0, z*1.2);
-                }
-//            }
-        }
-/*        glColor3f(1.0f, 1.0f, 1.0f);
-		glTranslatef(-(double)this->width/2.0, -(double)this->height/2.0, 0.0);
+//        glTranslated( -this->width/2.0, 0.0, -this->depth/2.0 );
 
-		for(double y = 0; y < this->height; y++) {
-            for(double x = 0; x < this->width; x++) {
-                glTranslated( x,  y, 0);
-                getNode(x, y).draw();
-                glTranslated(-x, -y, 0);
+        double xx;
+        double zz;
+
+        for(Uint32 z = 0; z < this->depth; z++) {
+            for(Uint32 x = 0; x < this->width; x++) {
+
+                xx = x-((double)this->width/2.0);
+                zz = z-((double)this->depth/2.0);
+
+                if ((x+z)%2) {
+                    glColor3d(1, 0, 0);
+                } else {
+                    glColor3d(1, 1, 1);
+                }
+
+                glBegin(GL_QUADS);
+                    glVertex3d(xx-0.5, -1.0, zz-0.5);
+                    glVertex3d(xx+0.5, -1.0, zz-0.5);
+                    glVertex3d(xx+0.5, -1.0, zz+0.5);
+                    glVertex3d(xx-0.5, -1.0, zz+0.5);
+                glEnd();
             }
-		}*/
+        }
     }
 };
 

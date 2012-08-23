@@ -32,11 +32,11 @@ class Engine {
 };
 
 Engine::Engine() : player(Player()) {
-    this->player.setPos(0.0, 1.0, -10.0);
+    this->player.setPos(0.0, 0.0, 0.0);
+    this->player.setRotate(0.0, 20.0, 0.0);
+    this->player.setSpeed(1.0, 0.0009);
 
     this->running = false;
-    this->lastRun = 0;
-    this->runDelay = 250;
     this->map = new Cave();
 }
 
@@ -45,7 +45,6 @@ Player *Engine::getPlayer() { return &this->player; }
 
 void Engine::run() {
     this->running = true;
-    this->lastRun = SDL_GetTicks();
     debug("Start to run!", __LINE__);
 }
 void Engine::stop() {
@@ -56,15 +55,9 @@ bool Engine::isRunning() { return this->running; }
 
 void Engine::update() {
     if (!this->running) return;
-    if (SDL_GetTicks() < this->lastRun + this->runDelay) return;
-
-
 
     this->player.update();
     this->player.posp.y = 0.0;
-
-
-    this->lastRun = SDL_GetTicks();
 }
 
 void Engine::drawGUI() {

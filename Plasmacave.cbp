@@ -40,10 +40,11 @@
 			<Add option="-lGLEW" />
 		</Linker>
 		<Unit filename="Cave.hpp" />
+		<Unit filename="Character.hpp" />
+		<Unit filename="Common.hpp" />
 		<Unit filename="Engine.hpp" />
 		<Unit filename="Light.hpp" />
 		<Unit filename="Player.hpp" />
-		<Unit filename="common.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

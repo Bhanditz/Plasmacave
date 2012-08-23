@@ -17,7 +17,7 @@
 #define SCREEN_BPP		32
 #define PI				3.1415926535
 
-#include "common.hpp"
+#include "Common.hpp"
 #include "Light.hpp"
 
 namespace fps {
@@ -206,10 +206,10 @@ int main( int argc, char **argv ) {
                     case SDLK_e: usZp += usMove; break;
                     case SDLK_q: usZp -= usMove; break;
 
-                    case SDLK_RIGHT: game->getPlayer()->move( 1, 0, 0); break;
-                    case SDLK_LEFT:  game->getPlayer()->move(-1, 0, 0); break;
-                    case SDLK_UP:    game->getPlayer()->move(0,  1, 0); break;
-                    case SDLK_DOWN:  game->getPlayer()->move(0, -1, 0); break;
+                    case SDLK_RIGHT: game->getPlayer()->turn( 0.0, 10.0, 0.0); break;
+                    case SDLK_LEFT:  game->getPlayer()->turn( 0.0,-10.0, 0.0); break;
+                    case SDLK_UP:    game->getPlayer()->move(  1.0 ); break;
+                    case SDLK_DOWN:  game->getPlayer()->move( -1.0 ); break;
 
                     case SDLK_RETURN:
                         if (game->isRunning()) game->stop(); else game->run();
@@ -230,10 +230,14 @@ int main( int argc, char **argv ) {
 
         glLoadIdentity();
 
+		glRotated(game->getPlayer()->rotate.x, 1, 0, 0);
+		glRotated(game->getPlayer()->rotate.y, 0, 1, 0);
+		glRotated(game->getPlayer()->rotate.z, 0, 0, 1);
+
         glTranslated(game->getPlayer()->pos.x, game->getPlayer()->pos.y, -10+game->getPlayer()->pos.z);
 
-		glRotated((-1.0 + 2.0*mouse.y/SCREEN_HEIGHT) * -10.0, 1, 0, 0);
-		glRotated((-1.0 + 2.0*mouse.x/SCREEN_WIDTH) * -10.0, 0, 1, 0);
+/*		glRotated((-1.0 + 2.0*mouse.y/SCREEN_HEIGHT)* -10.0, 1, 0, 0);
+		glRotated((-1.0 + 2.0*mouse.x/SCREEN_WIDTH) * -10.0, 0, 1, 0);*/
 
         game->update();
         game->draw();
