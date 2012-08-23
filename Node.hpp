@@ -10,12 +10,9 @@
 
 class Node {
  private:
-    double elevation;
  public:
-    Node(double _elevation = 0.0) : elevation(_elevation) {}
-
-    void   setElevation(double _elevation) { this->elevation = _elevation; }
-    double getElevation()                  { return this->elevation; }
+    bool hit;
+    Node(bool _hit = false) : hit(_hit) {}
 };
 
 #endif

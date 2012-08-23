@@ -8,10 +8,12 @@
 
 struct vec3 {
     double x, y, z;
+    void clear() { x = 0.0; y = 0.0; z = 0.0; }
 };
 
 struct vec2 {
     double x, y;
+    void clear() { x = 0.0; y = 0.0; }
 };
 
 void drawCube(GLfloat w, GLfloat h, GLfloat d) {
@@ -28,38 +30,77 @@ void drawCube(GLfloat w, GLfloat h, GLfloat d) {
 
         //etuneliö
         glNormal3f(0.0f, 0.0f,  1.0f);
-        glVertex3f(-w, -h,  d); // vasen ylä
-        glVertex3f(-w,  h,  d); // vasen ala
-        glVertex3f( w,  h,  d); // oikea ala
-        glVertex3f( w, -h,  d); // oikea ylä
+        glTexCoord2i( 0, 1 ); glVertex3f(-w, -h,  d); // vasen ylä
+        glTexCoord2i( 0, 0 ); glVertex3f(-w,  h,  d); // vasen ala
+        glTexCoord2i( 1, 0 ); glVertex3f( w,  h,  d); // oikea ala
+        glTexCoord2i( 1, 1 ); glVertex3f( w, -h,  d); // oikea ylä
 
         //vasen neliö
         glNormal3f(-1.0f, 0.0f, 0.0f);
-        glVertex3f(-w, -h, -d); // vasen ylä
-        glVertex3f(-w, -h,  d); // vasen ala
-        glVertex3f(-w,  h,  d); // oikea ala
-        glVertex3f(-w,  h, -d); // oikea ylä
+        glTexCoord2i( 0, 1 ); glVertex3f(-w, -h, -d); // vasen ylä
+        glTexCoord2i( 0, 0 ); glVertex3f(-w, -h,  d); // vasen ala
+        glTexCoord2i( 1, 0 ); glVertex3f(-w,  h,  d); // oikea ala
+        glTexCoord2i( 1, 1 ); glVertex3f(-w,  h, -d); // oikea ylä
 
         //oikea neliö
         glNormal3f( 1.0f,  0.0f, 0.0f);
-        glVertex3f( w, -h, -d); // vasen ylä
-        glVertex3f( w, -h,  d); // vasen ala
-        glVertex3f( w,  h,  d); // oikea ala
-        glVertex3f( w,  h, -d); // oikea ylä
+        glTexCoord2i( 0, 1 ); glVertex3f( w, -h, -d); // vasen ylä
+        glTexCoord2i( 0, 0 ); glVertex3f( w, -h,  d); // vasen ala
+        glTexCoord2i( 1, 0 ); glVertex3f( w,  h,  d); // oikea ala
+        glTexCoord2i( 1, 1 ); glVertex3f( w,  h, -d); // oikea ylä
 
         //yläneliö
         glNormal3f(0.0f, -1.0f, 0.0f);
-        glVertex3f(-w, -h, -d); // vasen ylä
-        glVertex3f(-w, -h,  d); // vasen ala
-        glVertex3f( w, -h,  d); // oikea ala
-        glVertex3f( w, -h, -d); // oikea ylä
+        glTexCoord2i( 0, 1 ); glVertex3f(-w, -h, -d); // vasen ylä
+        glTexCoord2i( 0, 0 ); glVertex3f(-w, -h,  d); // vasen ala
+        glTexCoord2i( 1, 0 ); glVertex3f( w, -h,  d); // oikea ala
+        glTexCoord2i( 1, 1 ); glVertex3f( w, -h, -d); // oikea ylä
 
         //alaneliö
         glNormal3f(0.0f, 1.0f, 0.0f);
-        glVertex3f(-w,  h, -d); // vasen ylä
-        glVertex3f(-w,  h,  d); // vasen ala
-        glVertex3f( w,  h,  d); // oikea ala
-        glVertex3f( w,  h, -d); // oikea ylä
+        glTexCoord2i( 0, 1 ); glVertex3f(-w,  h, -d); // vasen ylä
+        glTexCoord2i( 0, 0 ); glVertex3f(-w,  h,  d); // vasen ala
+        glTexCoord2i( 1, 0 ); glVertex3f( w,  h,  d); // oikea ala
+        glTexCoord2i( 1, 1 ); glVertex3f( w,  h, -d); // oikea ylä
+    glEnd();
+
+    glColor3f(0,0,0);
+    glBegin( GL_LINE_LOOP );
+        glTexCoord2i( 0, 1 ); glVertex3f(-w, -h, -d); // vasen ylä
+        glTexCoord2i( 0, 0 ); glVertex3f(-w,  h, -d); // vasen ala
+        glTexCoord2i( 1, 0 ); glVertex3f( w,  h, -d); // oikea ala
+        glTexCoord2i( 1, 1 ); glVertex3f( w, -h, -d); // oikea ylä
+    glEnd();
+    glBegin( GL_LINE_LOOP );
+        glTexCoord2i( 0, 1 ); glVertex3f(-w, -h,  d); // vasen ylä
+        glTexCoord2i( 0, 0 ); glVertex3f(-w,  h,  d); // vasen ala
+        glTexCoord2i( 1, 0 ); glVertex3f( w,  h,  d); // oikea ala
+        glTexCoord2i( 1, 1 ); glVertex3f( w, -h,  d); // oikea ylä
+    glEnd();
+    glBegin( GL_LINE_LOOP );
+        glTexCoord2i( 0, 1 ); glVertex3f(-w, -h, -d); // vasen ylä
+        glTexCoord2i( 0, 0 ); glVertex3f(-w, -h,  d); // vasen ala
+        glTexCoord2i( 1, 0 ); glVertex3f(-w,  h,  d); // oikea ala
+        glTexCoord2i( 1, 1 ); glVertex3f(-w,  h, -d); // oikea ylä
+    glEnd();
+    glBegin( GL_LINE_LOOP );
+        glTexCoord2i( 0, 1 ); glVertex3f( w, -h, -d); // vasen ylä
+        glTexCoord2i( 0, 0 ); glVertex3f( w, -h,  d); // vasen ala
+        glTexCoord2i( 1, 0 ); glVertex3f( w,  h,  d); // oikea ala
+        glTexCoord2i( 1, 1 ); glVertex3f( w,  h, -d); // oikea ylä
+    glEnd();
+    glBegin( GL_LINE_LOOP );
+        glNormal3f(0.0f, -1.0f, 0.0f);
+        glTexCoord2i( 0, 1 ); glVertex3f(-w, -h, -d); // vasen ylä
+        glTexCoord2i( 0, 0 ); glVertex3f(-w, -h,  d); // vasen ala
+        glTexCoord2i( 1, 0 ); glVertex3f( w, -h,  d); // oikea ala
+        glTexCoord2i( 1, 1 ); glVertex3f( w, -h, -d); // oikea ylä
+    glEnd();
+    glBegin( GL_LINE_LOOP );
+        glTexCoord2i( 0, 1 ); glVertex3f(-w,  h, -d); // vasen ylä
+        glTexCoord2i( 0, 0 ); glVertex3f(-w,  h,  d); // vasen ala
+        glTexCoord2i( 1, 0 ); glVertex3f( w,  h,  d); // oikea ala
+        glTexCoord2i( 1, 1 ); glVertex3f( w,  h, -d); // oikea ylä
     glEnd();
 }
 

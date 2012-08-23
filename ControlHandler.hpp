@@ -9,7 +9,7 @@ class ControlHandler {
     SDL_Event _event;
     std::map<Uint8, SDL_Event> _events;
 
-    int mx, my, mp;
+    int mx, my, mp, lmx, lmy;
 
     std::map<SDLKey, bool> _keyDown;
     std::map<SDLKey, bool> _keyHit;
@@ -25,6 +25,7 @@ class ControlHandler {
         _keyHit.clear();
         _events.clear();
 
+		lmx = mx;     lmy = my;
 		mp = SDL_GetMouseState(&mx, &my);
 
 		while ( SDL_PollEvent( &_event ) ) {
@@ -48,6 +49,8 @@ class ControlHandler {
 
     int mouseX()   { return this->mx; }
     int mouseY()   { return this->my; }
+    int mouseXP()   { return this->lmx-this->mx; }
+    int mouseYP()   { return this->lmy-this->my; }
     int mouseP()   { return this->mp; }
 
     std::map<Uint8, SDL_Event> getEvents() { return this->_events; }
@@ -55,5 +58,3 @@ class ControlHandler {
 };
 
 #endif
-
-

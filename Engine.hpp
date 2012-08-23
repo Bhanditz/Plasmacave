@@ -32,11 +32,11 @@ class Engine {
 };
 
 Engine::Engine() : player(Player()) {
-    this->player.setPos(0.0, 0.0, 0.0);
+    this->player.setPos(0.0, -2.0, 0.0);
     this->player.setRotate(0.0, 20.0, 0.0);
     this->player.setSpeed(1.0, 0.0009);
 
-    this->running = false;
+    this->running = true;
     this->map = new Cave();
 }
 
@@ -56,8 +56,11 @@ bool Engine::isRunning() { return this->running; }
 void Engine::update() {
     if (!this->running) return;
 
+    if (this->getMap()->isHitting(this->player.nextPost())) {
+        this->player.posp.y = 0.0;
+        printf("Hitting!\n");
+    }
     this->player.update();
-    this->player.posp.y = 0.0;
 }
 
 void Engine::drawGUI() {

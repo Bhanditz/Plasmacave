@@ -12,8 +12,10 @@
 
 #define DEBUG(str) debug(str, __LINE__);
 
-#define SCREEN_WIDTH	700
+#define SCREEN_WIDTH	1000
 #define SCREEN_HEIGHT	700
+#define SCREEN_WIDTH2	SCREEN_WIDTH/2.0
+#define SCREEN_HEIGHT2	SCREEN_HEIGHT/2.0
 #define SCREEN_D        ((double)SCREEN_HEIGHT/(double)SCREEN_WIDTH)
 #define SCREEN_BPP		32
 #define PI				3.1415926535
@@ -23,22 +25,36 @@
 #include "Light.hpp"
 
 namespace fps {
-    double   fps;
-    double   lbb = 0;
-    double   ltt = 0;
+    double  fps;
+    double  bb = 0.0, lbb = 0;
+    double  tt = 0.0, ltt = 0;
+    double  lr;
+    int     fpslimit;
+    double  numms;
+    double  fpstxtd;
+    char    fpstxt[256];
+    void regulate() {
+        bb = SDL_GetTicks();
+        double timeDiff = bb - lbb;
 
-    int calc(double tt, double bb) {
-        bb = bb/1000.0;
-        fps::fps = (tt-ltt)/(bb-lbb);
-        fps::ltt = tt;
-        fps::lbb = bb;
-        return fps::fps;
+        if ( timeDiff < numms ) SDL_Delay( numms - timeDiff );
+//        else valita!
+        tt++;
+        fps = 1000.0 * (tt-ltt) / timeDiff;
+        ltt = tt;
+        lbb = bb;
+
+        if(bb-1000 > fpstxtd) {
+            sprintf(fpstxt, "%.2f", fps);
+            SDL_WM_SetCaption(fpstxt, NULL);
+            fpstxtd = bb;
+        }
     }
-    int calc(int tt, int bb)
-        { return calc((double)tt, (double)bb); }
-
-    int calc(Uint32 tt, Uint32 bb)
-        { return calc((double)tt, (double)bb); }
+    void setLimit(int _fpslimit) {
+        fpslimit = _fpslimit;
+        numms = 1000.0/(double)_fpslimit;
+        fpstxtd = bb = SDL_GetTicks();
+    }
 }
 
 void debug(const char* str, int line = -1) {
@@ -59,7 +75,6 @@ Uint32 tt = 0, bb = 0;
 int videoFlags, done = 0;
 ControlHandler ctrl;
 const SDL_VideoInfo *videoInfo;
-char winTitle[256];
 
 float usXp = 0.0f;
 float usYp = 0.0f;
@@ -133,6 +148,8 @@ int main( int argc, char **argv ) {
 		fprintf( stderr,  "Video mode set failed: %s\n", SDL_GetError( ) );
 		Quit(1);
 	}
+	SDL_ShowCursor(0);
+	SDL_SetCursor(NULL);
 
 // --------- INITIALIZING OGL ---------
 
@@ -181,17 +198,11 @@ int main( int argc, char **argv ) {
 
     debug("STARTING THE LOOP", __LINE__);
 
+    SDL_WarpMouse(SCREEN_WIDTH2, SCREEN_HEIGHT2);
+
 	while (!done) {
-		bb = SDL_GetTicks();
-		tt++;
-
-		fps::calc(tt, bb);
-		if ( fps::lbb < bb - 1000 ) {
-            sprintf(winTitle, "%.2f", fps::fps);
-            SDL_WM_SetCaption(winTitle, NULL);
-		}
-
         ctrl.update();
+        SDL_WarpMouse(SCREEN_WIDTH2, SCREEN_HEIGHT2);
 
         if (ctrl.keyHit(SDLK_ESCAPE)) done = 1;
         if (ctrl.keyHit(SDLK_RETURN)) {
@@ -199,29 +210,31 @@ int main( int argc, char **argv ) {
             else game->run();
         }
 
-        if (ctrl.keyDown(SDLK_RIGHT)) game->getPlayer()->turn( 0.0, 10.0, 0.0);
-        if (ctrl.keyDown(SDLK_LEFT))  game->getPlayer()->turn( 0.0,-10.0, 0.0);
-        if (ctrl.keyDown(SDLK_UP))    game->getPlayer()->move(  1.0 );
-        if (ctrl.keyDown(SDLK_DOWN))  game->getPlayer()->move( -1.0 );
+        if (ctrl.keyDown(SDLK_d) || ctrl.keyDown(SDLK_RIGHT)) game->getPlayer()->turn( 0.0, 10.0, 0.0);
+        if (ctrl.keyDown(SDLK_a) || ctrl.keyDown(SDLK_LEFT))  game->getPlayer()->turn( 0.0,-10.0, 0.0);
+        if (ctrl.keyDown(SDLK_w) || ctrl.keyDown(SDLK_UP))    game->getPlayer()->move(  1.0 );
+        if (ctrl.keyDown(SDLK_s) || ctrl.keyDown(SDLK_DOWN))  game->getPlayer()->move( -1.0 );
 
-		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        if (ctrl.keyHit(SDLK_SPACE)) game->getPlayer()->jump( 1.0 );
 
+        game->getPlayer()->turn( 0.0, (ctrl.mouseX()-SCREEN_WIDTH2)/10.0, 0.0);
+        game->getPlayer()->turn( (ctrl.mouseY()-SCREEN_HEIGHT2)/10.0, 0.0, 0.0);
+
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
         glLoadIdentity();
 
-		glRotated(game->getPlayer()->rotate.x, 1, 0, 0);
-		glRotated(game->getPlayer()->rotate.y, 0, 1, 0);
-		glRotated(game->getPlayer()->rotate.z, 0, 0, 1);
+        glRotated(game->getPlayer()->rotate.x, 1, 0, 0);
+        glRotated(game->getPlayer()->rotate.y, 0, 1, 0);
+        glRotated(game->getPlayer()->rotate.z, 0, 0, 1);
 
-        glTranslated(game->getPlayer()->pos.x, game->getPlayer()->pos.y, -10+game->getPlayer()->pos.z);
-
-/*		glRotated((-1.0 + 2.0*mouse.y/SCREEN_HEIGHT)* -10.0, 1, 0, 0);
-		glRotated((-1.0 + 2.0*mouse.x/SCREEN_WIDTH) * -10.0, 0, 1, 0);*/
+        glTranslated(game->getPlayer()->pos.x, game->getPlayer()->pos.y, game->getPlayer()->pos.z);
 
         game->update();
         game->draw();
 
-		SDL_GL_SwapBuffers( );
+        SDL_GL_SwapBuffers( );
+        fps::regulate();
 	}
 	Quit(0);
 	return 0;

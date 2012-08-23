@@ -52,14 +52,24 @@ class Cave {
                     glColor3d(1, 1, 1);
                 }
 
-                glBegin(GL_QUADS);
-                    glVertex3d(xx-0.5, -1.0+this->nodes[z][0][x].getElevation(), zz-0.5);
-                    glVertex3d(xx+0.5, -1.0+this->nodes[z][0][x].getElevation(), zz-0.5);
-                    glVertex3d(xx+0.5, -1.0+this->nodes[z][0][x].getElevation(), zz+0.5);
-                    glVertex3d(xx-0.5, -1.0+this->nodes[z][0][x].getElevation(), zz+0.5);
-                glEnd();
+                glTranslated(xx, -1.30, zz);
+                drawCube(0.9);
+                glTranslated(-xx, 1.30, -zz);
+/*                glBegin(GL_QUADS);
+                    glVertex3d(xx-0.5, -1.30, zz-0.5);
+                    glVertex3d(xx+0.5, -1.30, zz-0.5);
+                    glVertex3d(xx+0.5, -1.30, zz+0.5);
+                    glVertex3d(xx-0.5, -1.30, zz+0.5);
+                glEnd();*/
             }
         }
+    }
+
+    bool isHitting(vec3 vec) {
+        int x = floor(vec.x+0.5);
+        int y = floor(vec.y+0.5);
+        int z = floor(vec.z+0.5);
+        return this->nodes[z][y][x].hit;
     }
 };
 
