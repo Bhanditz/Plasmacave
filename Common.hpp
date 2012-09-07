@@ -8,13 +8,17 @@
 
 struct vec3 {
     double x, y, z;
-    void clear() { x = 0.0; y = 0.0; z = 0.0; }
+    vec3( double _x=0.0, double _y=0.0, double _z=0.0 ) : x(_x), y(_y), z(_z) {};
+    void clear() { x = 0.0; y = 0.0; z = 0.0; };
 };
 
 struct vec2 {
     double x, y;
-    void clear() { x = 0.0; y = 0.0; }
+    vec2( double _x=0.0, double _y=0.0 ) : x(_x), y(_y) {};
+    void clear() { x = 0.0; y = 0.0; };
 };
+
+void glColor3(vec3 clr) { glColor3d(clr.x, clr.y, clr.z); }
 
 void drawCube(GLfloat w, GLfloat h, GLfloat d) {
     w = w/2;
@@ -64,6 +68,7 @@ void drawCube(GLfloat w, GLfloat h, GLfloat d) {
         glTexCoord2i( 1, 1 ); glVertex3f( w,  h, -d); // oikea ylä
     glEnd();
 
+#if false
     glColor3f(0,0,0);
     glBegin( GL_LINE_LOOP );
         glTexCoord2i( 0, 1 ); glVertex3f(-w, -h, -d); // vasen ylä
@@ -102,6 +107,7 @@ void drawCube(GLfloat w, GLfloat h, GLfloat d) {
         glTexCoord2i( 1, 0 ); glVertex3f( w,  h,  d); // oikea ala
         glTexCoord2i( 1, 1 ); glVertex3f( w,  h, -d); // oikea ylä
     glEnd();
+#endif
 }
 
 void drawCube(GLdouble w, GLdouble h, GLdouble d)

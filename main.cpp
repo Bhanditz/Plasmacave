@@ -33,6 +33,7 @@ namespace fps {
     double  numms;
     double  fpstxtd;
     char    fpstxt[256];
+    bool    secondEvent;
     void regulate() {
         bb = SDL_GetTicks();
         double timeDiff = bb - lbb;
@@ -48,6 +49,9 @@ namespace fps {
             sprintf(fpstxt, "%.2f", fps);
             SDL_WM_SetCaption(fpstxt, NULL);
             fpstxtd = bb;
+            secondEvent = true;
+        } else {
+            secondEvent = false;
         }
     }
     void setLimit(int _fpslimit) {
@@ -123,6 +127,7 @@ int main( int argc, char **argv ) {
 //    lights.push_back(tmplight);
 
     Engine *game = new Engine();
+//    fps::setLimit(60);
 
     debug("INITIALIZING SDL", __LINE__);
     debug("Initing SDL(video)", __LINE__);
@@ -149,20 +154,20 @@ int main( int argc, char **argv ) {
 		Quit(1);
 	}
 	SDL_ShowCursor(0);
-	SDL_SetCursor(NULL);
+    SDL_WarpMouse(SCREEN_WIDTH2, SCREEN_HEIGHT2);
 
 // --------- INITIALIZING OGL ---------
 
     debug("INITIALIZING OPENGL", __LINE__);
-    glEnable( GL_TEXTURE_2D );
-	glShadeModel( GL_SMOOTH );
+//    glEnable( GL_TEXTURE_2D );
+//	glShadeModel( GL_SMOOTH );
 	glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 	glClearDepth( 1.0f );
 	glEnable( GL_DEPTH_TEST );
 	glDepthMask(GL_TRUE);
 //	glEnable(GL_LIGHTING);
 	glDepthFunc( GL_LEQUAL );
-	glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
+	glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST );
 
 /*    for(Uint32 i = 0; i < lights.size(); i++) {
         glLightfv(lights[i].getId(), GL_AMBIENT,  lights[i].getAmbient());
@@ -198,30 +203,27 @@ int main( int argc, char **argv ) {
 
     debug("STARTING THE LOOP", __LINE__);
 
-    SDL_WarpMouse(SCREEN_WIDTH2, SCREEN_HEIGHT2);
-
 	while (!done) {
         ctrl.update();
+        fps::regulate();
         SDL_WarpMouse(SCREEN_WIDTH2, SCREEN_HEIGHT2);
-
-        if (ctrl.keyHit(SDLK_ESCAPE)) done = 1;
-        if (ctrl.keyHit(SDLK_RETURN)) {
-            if (game->isRunning()) game->stop();
-            else game->run();
-        }
 
         if (ctrl.keyDown(SDLK_d) || ctrl.keyDown(SDLK_RIGHT)) game->getPlayer()->turn( 0.0, 10.0, 0.0);
         if (ctrl.keyDown(SDLK_a) || ctrl.keyDown(SDLK_LEFT))  game->getPlayer()->turn( 0.0,-10.0, 0.0);
         if (ctrl.keyDown(SDLK_w) || ctrl.keyDown(SDLK_UP))    game->getPlayer()->move(  1.0 );
         if (ctrl.keyDown(SDLK_s) || ctrl.keyDown(SDLK_DOWN))  game->getPlayer()->move( -1.0 );
-
         if (ctrl.keyHit(SDLK_SPACE)) game->getPlayer()->jump( 1.0 );
+        if (ctrl.keyHit(SDLK_ESCAPE)) done = 1;
+        if (ctrl.keyHit(SDLK_RETURN)) {
+            if (game->isRunning()) game->stop();
+            else                   game->run();
+        }
 
         game->getPlayer()->turn( 0.0, (ctrl.mouseX()-SCREEN_WIDTH2)/10.0, 0.0);
         game->getPlayer()->turn( (ctrl.mouseY()-SCREEN_HEIGHT2)/10.0, 0.0, 0.0);
 
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         glLoadIdentity();
 
         glRotated(game->getPlayer()->rotate.x, 1, 0, 0);
@@ -230,11 +232,22 @@ int main( int argc, char **argv ) {
 
         glTranslated(game->getPlayer()->pos.x, game->getPlayer()->pos.y, game->getPlayer()->pos.z);
 
+        glBegin(GL_LINES);
+            glColor3d( 1.0, 1.0, 1.0 );
+            glVertex3d( 10.0, 0.0, 0.0 );
+            glVertex3d( -10.0, 0.0, 0.0 );
+
+            glVertex3d( 0.0, 10.0, 0.0 );
+            glVertex3d( 0.0,-10.0, 0.0 );
+
+            glVertex3d( 0.0, 0.0, 10.0 );
+            glVertex3d( 0.0, 0.0,-10.0 );
+        glEnd();
+
         game->update();
         game->draw();
 
         SDL_GL_SwapBuffers( );
-        fps::regulate();
 	}
 	Quit(0);
 	return 0;

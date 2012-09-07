@@ -25,6 +25,12 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-lSDL" />
+					<Add option="-lSDL_mixer" />
+					<Add option="-lSDL_image" />
+					<Add option="-lGL" />
+					<Add option="-lGLU" />
+					<Add option="-lGLEW" />
 				</Linker>
 			</Target>
 		</Build>
